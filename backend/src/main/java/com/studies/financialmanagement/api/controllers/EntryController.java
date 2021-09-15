@@ -5,6 +5,7 @@ import com.studies.financialmanagement.api.exceptionhandler.ApiExceptionHandler;
 import com.studies.financialmanagement.api.models.Entry;
 import com.studies.financialmanagement.api.repositories.EntryRepository;
 import com.studies.financialmanagement.api.repositories.filter.EntryFilter;
+import com.studies.financialmanagement.api.repositories.projections.EntrySummary;
 import com.studies.financialmanagement.api.service.EntryService;
 import com.studies.financialmanagement.api.service.exception.InactiveOrInexistentPersonException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,15 @@ public class EntryController {
     private MessageSource messageSource;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
     public Page<Entry> search(EntryFilter entryFilter, Pageable pageable) {
         return repository.toFilter(entryFilter, pageable);
+    }
+
+    @GetMapping(params = "summary")
+    @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
+    public Page<EntrySummary> summary(EntryFilter entryFilter, Pageable pageable) {
+        return repository.toSummary(entryFilter, pageable);
     }
 
     @GetMapping("/{id}")
