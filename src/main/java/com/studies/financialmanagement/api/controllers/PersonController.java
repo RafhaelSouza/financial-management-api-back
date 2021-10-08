@@ -38,7 +38,7 @@ public class PersonController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_SEARCH_PERSON') and #oauth2.hasScope('read')")
-    public ResponseEntity<Person> findById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<Person> findById(@PathVariable Long id) {
         Optional<Person> person = repository.findById(id);
         if (person.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
