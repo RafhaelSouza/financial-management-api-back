@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("api-property")
 public class ApiProperty {
 
+    private String originAllowed = "http://localhost:4200";
+
     private final Security security = new Security();
 
     @Getter
