@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class CorsFilter implements Filter {
+public class CorsFilterCustom implements Filter {
 
 	@Autowired
 	private ApiProperty apiProperty;
