@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("api-property")
 public class ApiProperty {
 
-    private String originAllowed = "http://localhost:4200";
+    private String originAllowed = "https://financial-management-api-ui.herokuapp.com";
 
     private final Security security = new Security();
 
