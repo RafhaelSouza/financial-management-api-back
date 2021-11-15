@@ -1,5 +1,6 @@
 package com.studies.financialmanagement.api.repositories.entry;
 
+import com.studies.financialmanagement.api.dto.CategoryStatisticsEntry;
 import com.studies.financialmanagement.api.models.Category_;
 import com.studies.financialmanagement.api.models.Entry;
 import com.studies.financialmanagement.api.models.Entry_;
@@ -17,6 +18,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,36 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
 
     @PersistenceContext
     private EntityManager manager;
+
+    @Override
+    public List<CategoryStatisticsEntry> byCategory(LocalDate referenceMonth) {
+        CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+
+        CriteriaQuery<CategoryStatisticsEntry> criteriaQuery = criteriaBuilder.
+                createQuery(CategoryStatisticsEntry.class);
+
+        Root<Entry> root = criteriaQuery.from(Entry.class);
+
+        criteriaQuery.select(criteriaBuilder.construct(CategoryStatisticsEntry.class,
+                root.get(Entry_.category),
+                criteriaBuilder.sum(root.get(Entry_.price))));
+
+        LocalDate firstDay = referenceMonth.withDayOfMonth(1);
+        LocalDate lastDay = referenceMonth.withDayOfMonth(referenceMonth.lengthOfMonth());
+
+        criteriaQuery.where(
+                criteriaBuilder.greaterThanOrEqualTo(root.get(Entry_.dueDate),
+                        firstDay),
+                criteriaBuilder.lessThanOrEqualTo(root.get(Entry_.dueDate),
+                        lastDay));
+
+        criteriaQuery.groupBy(root.get(Entry_.category));
+
+        TypedQuery<CategoryStatisticsEntry> typedQuery = manager
+                .createQuery(criteriaQuery);
+
+        return typedQuery.getResultList();
+    }
 
     @Override
     public Page<Entry> toFilter(EntryFilter entryFilter, Pageable pageable) {
