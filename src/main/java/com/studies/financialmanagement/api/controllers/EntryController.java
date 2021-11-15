@@ -1,6 +1,7 @@
 package com.studies.financialmanagement.api.controllers;
 
-import com.studies.financialmanagement.api.dto.CategoryStatisticsEntry;
+import com.studies.financialmanagement.api.dto.EntryStatisticsCategory;
+import com.studies.financialmanagement.api.dto.EntryStatisticsDay;
 import com.studies.financialmanagement.api.event.CreatedResourceEvent;
 import com.studies.financialmanagement.api.exceptionhandler.ApiExceptionHandler;
 import com.studies.financialmanagement.api.models.Entry;
@@ -66,9 +67,15 @@ public class EntryController {
         return ResponseEntity.ok(entry.get());
     }
 
+    @GetMapping("/statistics/by-day")
+    @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
+    public List<EntryStatisticsDay> byDay() {
+        return this.repository.byDay(LocalDate.now());
+    }
+
     @GetMapping("/statistics/by-category")
     @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
-    public List<CategoryStatisticsEntry> byCategory() {
+    public List<EntryStatisticsCategory> byCategory() {
         return this.repository.byCategory(LocalDate.now());
     }
 

@@ -1,6 +1,7 @@
 package com.studies.financialmanagement.api.repositories.entry;
 
-import com.studies.financialmanagement.api.dto.CategoryStatisticsEntry;
+import com.studies.financialmanagement.api.dto.EntryStatisticsCategory;
+import com.studies.financialmanagement.api.dto.EntryStatisticsDay;
 import com.studies.financialmanagement.api.models.Entry;
 import com.studies.financialmanagement.api.repositories.filter.EntryFilter;
 import com.studies.financialmanagement.api.repositories.projections.EntrySummary;
@@ -12,7 +13,8 @@ import java.util.List;
 
 public interface EntryRepositoryQuery {
 
-    public List<CategoryStatisticsEntry> byCategory(LocalDate referenceMonth);
+    public List<EntryStatisticsDay> byDay(LocalDate referenceMonth);
+    public List<EntryStatisticsCategory> byCategory(LocalDate referenceMonth);
 
     Page<Entry> toFilter(EntryFilter entryFilter, Pageable pageable);
     Page<EntrySummary> toSummary(EntryFilter entryFilter, Pageable pageable);

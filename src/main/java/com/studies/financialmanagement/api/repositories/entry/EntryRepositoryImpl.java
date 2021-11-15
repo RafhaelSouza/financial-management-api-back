@@ -1,6 +1,7 @@
 package com.studies.financialmanagement.api.repositories.entry;
 
-import com.studies.financialmanagement.api.dto.CategoryStatisticsEntry;
+import com.studies.financialmanagement.api.dto.EntryStatisticsCategory;
+import com.studies.financialmanagement.api.dto.EntryStatisticsDay;
 import com.studies.financialmanagement.api.models.Category_;
 import com.studies.financialmanagement.api.models.Entry;
 import com.studies.financialmanagement.api.models.Entry_;
@@ -28,15 +29,47 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
     private EntityManager manager;
 
     @Override
-    public List<CategoryStatisticsEntry> byCategory(LocalDate referenceMonth) {
+    public List<EntryStatisticsDay> byDay(LocalDate referenceMonth) {
         CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
 
-        CriteriaQuery<CategoryStatisticsEntry> criteriaQuery = criteriaBuilder.
-                createQuery(CategoryStatisticsEntry.class);
+        CriteriaQuery<EntryStatisticsDay> criteriaQuery = criteriaBuilder.
+                createQuery(EntryStatisticsDay.class);
 
         Root<Entry> root = criteriaQuery.from(Entry.class);
 
-        criteriaQuery.select(criteriaBuilder.construct(CategoryStatisticsEntry.class,
+        criteriaQuery.select(criteriaBuilder.construct(EntryStatisticsDay.class,
+                root.get(Entry_.entryType),
+                root.get(Entry_.dueDate),
+                criteriaBuilder.sum(root.get(Entry_.price))));
+
+        LocalDate firstDay = referenceMonth.withDayOfMonth(1);
+        LocalDate lastDay = referenceMonth.withDayOfMonth(referenceMonth.lengthOfMonth());
+
+        criteriaQuery.where(
+                criteriaBuilder.greaterThanOrEqualTo(root.get(Entry_.dueDate),
+                        firstDay),
+                criteriaBuilder.lessThanOrEqualTo(root.get(Entry_.dueDate),
+                        lastDay));
+
+        criteriaQuery.groupBy(root.get(Entry_.entryType),
+                root.get(Entry_.dueDate));
+
+        TypedQuery<EntryStatisticsDay> typedQuery = manager
+                .createQuery(criteriaQuery);
+
+        return typedQuery.getResultList();
+    }
+
+    @Override
+    public List<EntryStatisticsCategory> byCategory(LocalDate referenceMonth) {
+        CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+
+        CriteriaQuery<EntryStatisticsCategory> criteriaQuery = criteriaBuilder.
+                createQuery(EntryStatisticsCategory.class);
+
+        Root<Entry> root = criteriaQuery.from(Entry.class);
+
+        criteriaQuery.select(criteriaBuilder.construct(EntryStatisticsCategory.class,
                 root.get(Entry_.category),
                 criteriaBuilder.sum(root.get(Entry_.price))));
 
@@ -51,7 +84,7 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
 
         criteriaQuery.groupBy(root.get(Entry_.category));
 
-        TypedQuery<CategoryStatisticsEntry> typedQuery = manager
+        TypedQuery<EntryStatisticsCategory> typedQuery = manager
                 .createQuery(criteriaQuery);
 
         return typedQuery.getResultList();
