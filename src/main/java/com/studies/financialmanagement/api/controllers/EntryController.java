@@ -1,5 +1,6 @@
 package com.studies.financialmanagement.api.controllers;
 
+import com.studies.financialmanagement.api.dto.CategoryStatisticsEntry;
 import com.studies.financialmanagement.api.event.CreatedResourceEvent;
 import com.studies.financialmanagement.api.exceptionhandler.ApiExceptionHandler;
 import com.studies.financialmanagement.api.models.Entry;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +64,12 @@ public class EntryController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         return ResponseEntity.ok(entry.get());
+    }
+
+    @GetMapping("/statistics/by-category")
+    @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
+    public List<CategoryStatisticsEntry> byCategory() {
+        return this.repository.byCategory(LocalDate.now());
     }
 
     @PostMapping
