@@ -2,6 +2,7 @@ package com.studies.financialmanagement.api.repositories.entry;
 
 import com.studies.financialmanagement.api.dto.EntryStatisticsCategory;
 import com.studies.financialmanagement.api.dto.EntryStatisticsDay;
+import com.studies.financialmanagement.api.dto.EntryStatisticsPerson;
 import com.studies.financialmanagement.api.models.Category_;
 import com.studies.financialmanagement.api.models.Entry;
 import com.studies.financialmanagement.api.models.Entry_;
@@ -27,6 +28,35 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
 
     @PersistenceContext
     private EntityManager manager;
+
+    @Override
+    public List<EntryStatisticsPerson> byPerson(LocalDate begin, LocalDate end) {
+        CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+
+        CriteriaQuery<EntryStatisticsPerson> criteriaQuery = criteriaBuilder.
+                createQuery(EntryStatisticsPerson.class);
+
+        Root<Entry> root = criteriaQuery.from(Entry.class);
+
+        criteriaQuery.select(criteriaBuilder.construct(EntryStatisticsPerson.class,
+                root.get(Entry_.entryType),
+                root.get(Entry_.person),
+                criteriaBuilder.sum(root.get(Entry_.price))));
+
+        criteriaQuery.where(
+                criteriaBuilder.greaterThanOrEqualTo(root.get(Entry_.dueDate),
+                        begin),
+                criteriaBuilder.lessThanOrEqualTo(root.get(Entry_.dueDate),
+                        end));
+
+        criteriaQuery.groupBy(root.get(Entry_.entryType),
+                root.get(Entry_.person));
+
+        TypedQuery<EntryStatisticsPerson> typedQuery = manager
+                .createQuery(criteriaQuery);
+
+        return typedQuery.getResultList();
+    }
 
     @Override
     public List<EntryStatisticsDay> byDay(LocalDate referenceMonth) {
