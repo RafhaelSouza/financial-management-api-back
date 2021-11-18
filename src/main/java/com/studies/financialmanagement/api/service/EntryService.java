@@ -1,14 +1,22 @@
 package com.studies.financialmanagement.api.service;
 
+import com.studies.financialmanagement.api.dto.EntryStatisticsPerson;
 import com.studies.financialmanagement.api.models.Entry;
 import com.studies.financialmanagement.api.models.Person;
 import com.studies.financialmanagement.api.repositories.EntryRepository;
 import com.studies.financialmanagement.api.service.exception.InactiveOrInexistentPersonException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.io.InputStream;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class EntryService {
@@ -18,6 +26,23 @@ public class EntryService {
 
     @Autowired
     private EntryRepository repository;
+
+    public byte[] reportByPerson(LocalDate begin, LocalDate end) throws Exception {
+        List<EntryStatisticsPerson> data = repository.byPerson(begin, end);
+
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("BEGIN_DATE", Date.valueOf(begin));
+        parametros.put("END_DATE", Date.valueOf(end));
+        parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
+
+        InputStream inputStream = this.getClass().getResourceAsStream(
+                "/reports/entries-by-person.jasper");
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
+                new JRBeanCollectionDataSource(data));
+
+        return JasperExportManager.exportReportToPdf(jasperPrint);
+    }
 
     public Entry save(Entry entry) {
         personValidate(entry);
