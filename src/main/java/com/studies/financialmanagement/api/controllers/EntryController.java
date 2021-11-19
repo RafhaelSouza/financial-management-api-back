@@ -16,7 +16,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -70,13 +73,25 @@ public class EntryController {
     @GetMapping("/statistics/by-day")
     @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
     public List<EntryStatisticsDay> byDay() {
-        return this.repository.byDay(LocalDate.now());
+        return repository.byDay(LocalDate.now());
     }
 
     @GetMapping("/statistics/by-category")
     @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
     public List<EntryStatisticsCategory> byCategory() {
-        return this.repository.byCategory(LocalDate.now());
+        return repository.byCategory(LocalDate.now());
+    }
+
+    @GetMapping("/reports/by-person")
+    @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
+    public ResponseEntity<byte[]> reportByPerson(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) throws Exception {
+        byte[] report = service.reportByPerson(begin, end);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+                .body(report);
     }
 
     @PostMapping
