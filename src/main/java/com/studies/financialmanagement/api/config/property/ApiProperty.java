@@ -15,11 +15,27 @@ public class ApiProperty {
 
     private final Security security = new Security();
 
+    private final Mail mail = new Mail();
+
     @Getter
     @Setter
     public static class Security {
 
         private boolean enableHttps;
+
+    }
+
+    @Getter
+    @Setter
+    public static class Mail {
+
+        private String host;
+
+        private Integer port;
+
+        private String username;
+
+        private String password;
 
     }
 
