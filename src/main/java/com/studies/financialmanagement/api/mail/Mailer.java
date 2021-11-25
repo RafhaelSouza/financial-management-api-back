@@ -1,6 +1,7 @@
 package com.studies.financialmanagement.api.mail;
 
 import com.studies.financialmanagement.api.models.Entry;
+import com.studies.financialmanagement.api.models.Users;
 import com.studies.financialmanagement.api.repositories.EntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -14,6 +15,7 @@ import org.thymeleaf.context.Context;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class Mailer {
@@ -24,24 +26,44 @@ public class Mailer {
     @Autowired
     private TemplateEngine thymeleaf;
 
-    @Autowired
-    private EntryRepository entryRepository;
+//    @Autowired
+//    private EntryRepository entryRepository;
+//
+//	@EventListener
+//	private void test(ApplicationReadyEvent event) {
+//
+//        String template = "mail/warning-due-entries";
+//
+//		List<Entry> list = entryRepository.findAll();
+//
+//		Map<String, Object> variables = new HashMap<>();
+//		variables.put("entries", list);
+//
+//        processEmailTemplate("rafhael.dev@gmail.com",
+//				Arrays.asList("rafhael.lojas@gmail.com"),
+//				"Testing", template, variables);
+//		System.out.println("Finishing email sending...");
+//	}
 
-	@EventListener
-	private void test(ApplicationReadyEvent event) {
+    public void warnDueEntries(
+            List<Entry> dues, List<Users> recipients) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("entries", dues);
 
+        List<String> emails = recipients.stream()
+                .map(u -> u.getEmail())
+                .collect(Collectors.toList());
+
+        String sender = "rafhael.dev@gmail.com";
+        String subject = "Due Entries";
         String template = "mail/warning-due-entries";
 
-		List<Entry> list = entryRepository.findAll();
-
-		Map<String, Object> variables = new HashMap<>();
-		variables.put("entries", list);
-
-        processEmailTemplate("rafhael.dev@gmail.com",
-				Arrays.asList("rafhael.lojas@gmail.com"),
-				"Testing", template, variables);
-		System.out.println("Finishing email sending...");
-	}
+        processEmailTemplate(sender,
+                emails,
+                subject,
+                template,
+                variables);
+    }
 
     public void processEmailTemplate(String sender,
                           List<String> recipients, String subject, String template,

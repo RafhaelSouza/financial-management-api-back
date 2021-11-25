@@ -1,9 +1,12 @@
 package com.studies.financialmanagement.api.service;
 
 import com.studies.financialmanagement.api.dto.EntryStatisticsPerson;
+import com.studies.financialmanagement.api.mail.Mailer;
 import com.studies.financialmanagement.api.models.Entry;
 import com.studies.financialmanagement.api.models.Person;
+import com.studies.financialmanagement.api.models.Users;
 import com.studies.financialmanagement.api.repositories.EntryRepository;
+import com.studies.financialmanagement.api.repositories.UsersRepository;
 import com.studies.financialmanagement.api.service.exception.InactiveOrInexistentPersonException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -22,15 +25,29 @@ import java.util.*;
 @Service
 public class EntryService {
 
+    private static final String RECIPIENTS = "ROLE_SEARCH_ENTRY";
+
     @Autowired
     private PersonService personService;
 
     @Autowired
     private EntryRepository repository;
 
+    @Autowired
+    private UsersRepository usersRepository;
+
+    @Autowired
+    private Mailer mailer;
+
     @Scheduled(cron = "0 0 6 * * *")
     public void warnDueEntries() {
-        System.out.println(">>>>>>>>>>>>>>> Method being executed...");
+        List<Entry> dues = repository
+                .findByDueDateLessThanEqualAndPaymentDateIsNull(LocalDate.now());
+
+        List<Users> recipients = usersRepository
+                .findByPermissionsDescription(RECIPIENTS);
+
+        mailer.warnDueEntries(dues, recipients);
     }
 
     public byte[] reportByPerson(LocalDate begin, LocalDate end) throws Exception {

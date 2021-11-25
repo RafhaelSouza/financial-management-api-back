@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface EntryRepository extends JpaRepository<Entry, Long>, EntryRepositoryQuery {
 
-    List<Entry> findByDueDateLessThanEqualAndPaymentDueIsNull(LocalDate data);
+    List<Entry> findByDueDateLessThanEqualAndPaymentDateIsNull(LocalDate data);
 
 }
