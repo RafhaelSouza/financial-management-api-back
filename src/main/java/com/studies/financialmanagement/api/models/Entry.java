@@ -1,5 +1,6 @@
 package com.studies.financialmanagement.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -51,5 +52,10 @@ public class Entry {
     @ManyToOne
     @JoinColumn(name = "person_id")
     private Person person;
+
+    @JsonIgnore
+    public boolean isEarning() {
+        return EntryType.EARNING.equals(entryType);
+    }
 
 }
