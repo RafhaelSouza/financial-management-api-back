@@ -5,8 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -30,6 +32,10 @@ public class Person {
 
     @Embedded
     private Address address;
+
+    @Valid
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    private List<Contact> contacts;
 
     @JsonIgnore
     @Transient

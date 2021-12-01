@@ -43,8 +43,7 @@ public class EntryService {
     @Autowired
     private Mailer mailer;
 
-    @Scheduled(fixedDelay = 10 * 60 * 3000)
-    //@Scheduled(cron = "0 0 6 * * *")
+    @Scheduled(cron = "0 0 6 * * *")
     public void warnDueEntries() {
         if (logger.isDebugEnabled())
             logger.debug("Preparing to send e-mails for notice of dued entries.");
