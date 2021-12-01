@@ -12,6 +12,8 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,6 +29,8 @@ public class EntryService {
 
     private static final String RECIPIENTS = "ROLE_SEARCH_ENTRY";
 
+    private static final Logger logger = LoggerFactory.getLogger(EntryService.class);
+
     @Autowired
     private PersonService personService;
 
@@ -39,15 +43,33 @@ public class EntryService {
     @Autowired
     private Mailer mailer;
 
-    @Scheduled(cron = "0 0 6 * * *")
+    @Scheduled(fixedDelay = 10 * 60 * 3000)
+    //@Scheduled(cron = "0 0 6 * * *")
     public void warnDueEntries() {
+        if (logger.isDebugEnabled())
+            logger.debug("Preparing to send e-mails for notice of dued entries.");
+
         List<Entry> dues = repository
                 .findByDueDateLessThanEqualAndPaymentDateIsNull(LocalDate.now());
+
+        if (dues.isEmpty()) {
+            logger.info("No due entries to warn.");
+            return;
+        }
+
+        logger.info("There are {} due entries.", dues.size());
 
         List<Users> recipients = usersRepository
                 .findByPermissionsDescription(RECIPIENTS);
 
+        if (recipients.isEmpty()) {
+            logger.warn("There are overdue entries, but the system did not find recipients.");
+            return;
+        }
+
         mailer.warnDueEntries(dues, recipients);
+
+        logger.info("Notification email submission completed.");
     }
 
     public byte[] reportByPerson(LocalDate begin, LocalDate end) throws Exception {
