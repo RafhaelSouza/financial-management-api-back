@@ -23,9 +23,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -120,6 +124,16 @@ public class EntryController {
     @PreAuthorize("hasAuthority('ROLE_DELETE_ENTRY') and #oauth2.hasScope('write')")
     public void delete(@PathVariable Long id) {
         repository.deleteById(id);
+    }
+
+    @PostMapping("/attachment")
+    @PreAuthorize("hasAuthority('ROLE_SAVE_ENTRY') and #oauth2.hasScope('write')")
+    public String uploadAttachment(@RequestParam MultipartFile attachment) throws IOException {
+        OutputStream out = new FileOutputStream(
+                "/home/rafhael/Documentos/attachment--" + attachment.getOriginalFilename());
+        out.write(attachment.getBytes());
+        out.close();
+        return "ok";
     }
 
     @ExceptionHandler(InactiveOrInexistentPersonException.class)
