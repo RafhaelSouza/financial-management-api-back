@@ -15,6 +15,11 @@ public class PersonService {
     @Autowired
     private PersonRepository repository;
 
+    public Person save(Person person) {
+        person.getContacts().forEach(c -> c.setPerson(person));
+        return repository.save(person);
+    }
+
     public Person update(Long id, Person person) {
         Person savedPerson = getPersonById(id);
 
