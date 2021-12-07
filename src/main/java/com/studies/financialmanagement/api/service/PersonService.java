@@ -23,7 +23,11 @@ public class PersonService {
     public Person update(Long id, Person person) {
         Person savedPerson = getPersonById(id);
 
-        BeanUtils.copyProperties(person, savedPerson, "id");
+        savedPerson.getContacts().clear();
+        savedPerson.getContacts().addAll(person.getContacts());
+        savedPerson.getContacts().forEach(c -> c.setPerson(savedPerson));
+
+        BeanUtils.copyProperties(person, savedPerson, "id", "contacts");
 
         return repository.save(savedPerson);
     }

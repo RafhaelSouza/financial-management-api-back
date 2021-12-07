@@ -36,7 +36,7 @@ public class Person {
 
     @JsonIgnoreProperties("person")
     @Valid
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contact> contacts;
 
     @JsonIgnore
