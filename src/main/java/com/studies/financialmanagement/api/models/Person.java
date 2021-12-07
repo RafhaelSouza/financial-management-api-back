@@ -1,6 +1,7 @@
 package com.studies.financialmanagement.api.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -33,6 +34,7 @@ public class Person {
     @Embedded
     private Address address;
 
+    @JsonIgnoreProperties("person")
     @Valid
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Contact> contacts;
