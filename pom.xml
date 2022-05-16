@@ -21,6 +21,8 @@
 		<jasperreports.version>6.17.0</jasperreports.version>
 		<jasperreports-functions.version>6.17.0</jasperreports-functions.version>
 		<jasperreports-fonts.version>6.17.0</jasperreports-fonts.version>
+
+		<aws-java-sdk.version>1.11.274</aws-java-sdk.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -144,6 +146,14 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-fonts</artifactId>
 			<version>${jasperreports-fonts.version}</version>
+		</dependency>
+
+		<!-- AWS -->
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>${aws-java-sdk.version}</version>
 		</dependency>
 
 	</dependencies>
