@@ -49,21 +49,8 @@ public class ApiProperty {
 
         private String secretAccessKey;
 
-        public String getAccessKeyId() {
-            return accessKeyId;
-        }
+        private String bucket = "rsp-financial-management-files";
 
-        public void setAccessKeyId(String accessKeyId) {
-            this.accessKeyId = accessKeyId;
-        }
-
-        public String getSecretAccessKey() {
-            return secretAccessKey;
-        }
-
-        public void setSecretAccessKey(String secretAccessKey) {
-            this.secretAccessKey = secretAccessKey;
-        }
     }
 
 }
