@@ -1,5 +1,6 @@
 package com.studies.financialmanagement.api.controllers;
 
+import com.studies.financialmanagement.api.dto.Attachment;
 import com.studies.financialmanagement.api.dto.EntryStatisticsCategory;
 import com.studies.financialmanagement.api.dto.EntryStatisticsDay;
 import com.studies.financialmanagement.api.event.CreatedResourceEvent;
@@ -10,6 +11,7 @@ import com.studies.financialmanagement.api.repositories.filter.EntryFilter;
 import com.studies.financialmanagement.api.repositories.projections.EntrySummary;
 import com.studies.financialmanagement.api.service.EntryService;
 import com.studies.financialmanagement.api.service.exception.InactiveOrInexistentPersonException;
+import com.studies.financialmanagement.api.storage.S3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
@@ -50,6 +52,9 @@ public class EntryController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private S3 s3;
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
@@ -128,12 +133,14 @@ public class EntryController {
 
     @PostMapping("/attachment")
     @PreAuthorize("hasAuthority('ROLE_SAVE_ENTRY') and #oauth2.hasScope('write')")
-    public String uploadAttachment(@RequestParam MultipartFile attachment) throws IOException {
-        OutputStream out = new FileOutputStream(
-                "/home/rafhael/Documentos/attachment--" + attachment.getOriginalFilename());
-        out.write(attachment.getBytes());
-        out.close();
-        return "ok";
+    public Attachment uploadAttachment(@RequestParam MultipartFile attachment) throws IOException {
+        //OutputStream out = new FileOutputStream(
+                //"/home/rafhael/Documentos/attachment--" + attachment.getOriginalFilename());
+        //out.write(attachment.getBytes());
+        //out.close();
+        //return "ok";
+        String name = s3.tmpSave(attachment);
+        return new Attachment(name, s3.setUrl(name));
     }
 
     @ExceptionHandler(InactiveOrInexistentPersonException.class)
