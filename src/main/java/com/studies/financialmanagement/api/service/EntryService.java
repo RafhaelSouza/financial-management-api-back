@@ -8,6 +8,7 @@ import com.studies.financialmanagement.api.models.Users;
 import com.studies.financialmanagement.api.repositories.EntryRepository;
 import com.studies.financialmanagement.api.repositories.UsersRepository;
 import com.studies.financialmanagement.api.service.exception.InactiveOrInexistentPersonException;
+import com.studies.financialmanagement.api.storage.S3;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -18,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.InputStream;
 import java.sql.Date;
@@ -42,6 +44,9 @@ public class EntryService {
 
     @Autowired
     private Mailer mailer;
+
+    @Autowired
+    private S3 s3;
 
     @Scheduled(cron = "0 0 6 * * *")
     public void warnDueEntries() {
@@ -90,6 +95,9 @@ public class EntryService {
 
     public Entry save(Entry entry) {
         personValidate(entry);
+
+        if (StringUtils.hasText(entry.getAttachment()))
+            s3.save(entry.getAttachment());
 
         return repository.save(entry);
     }

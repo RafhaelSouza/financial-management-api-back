@@ -55,6 +55,11 @@ public class Entry {
     @JoinColumn(name = "person_id")
     private Person person;
 
+    private String attachment;
+
+    @Transient
+    private String attachmentUrl;
+
     @JsonIgnore
     public boolean isEarning() {
         return EntryType.EARNING.equals(entryType);
