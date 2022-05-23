@@ -2,6 +2,7 @@ package com.studies.financialmanagement.api.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.studies.financialmanagement.api.repositories.listener.AttachmentEntryListener;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EntityListeners(AttachmentEntryListener.class)
 @Entity
 @Table
 public class Entry {
