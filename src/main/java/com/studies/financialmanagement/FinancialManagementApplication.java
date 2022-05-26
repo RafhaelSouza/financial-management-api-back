@@ -1,6 +1,5 @@
 package com.studies.financialmanagement;
 
-import com.studies.financialmanagement.api.config.property.ApiProperty;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
