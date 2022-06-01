@@ -114,7 +114,7 @@ public class EntryController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO')")
+    @PreAuthorize("hasAuthority('ROLE_SAVE_ENTRY')")
     public ResponseEntity<Entry> update(@PathVariable Long id, @Valid @RequestBody Entry entry) {
         try {
             Entry savedEntry = service.update(id, entry);
