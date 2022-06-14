@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
 @Data
@@ -30,12 +32,8 @@ public class Address {
     @Column(name = "address_postalcode")
     private String postalCode;
 
-    @Size(min = 3, max = 50)
-    @Column(name = "address_city")
-    private String city;
-
-    @Size(min = 3, max = 50)
-    @Column(name = "address_state")
-    private String state;
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
 
 }
