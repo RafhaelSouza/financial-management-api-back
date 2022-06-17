@@ -107,11 +107,11 @@ public class EntryService {
         if (!entry.getPerson().equals(savedEntry.getPerson()))
             personValidate(entry);
 
-        if (entry.getAttachment().isEmpty()
+        if (entry.getAttachment() != null && entry.getAttachment().isEmpty()
                 && StringUtils.hasText(savedEntry.getAttachment())) {
             s3.delete(savedEntry.getAttachment());
 
-        } else if (StringUtils.hasLength(entry.getAttachment())
+        } else if (entry.getAttachment() != null && StringUtils.hasLength(entry.getAttachment())
                 && !entry.getAttachment().equals(savedEntry.getAttachment())) {
             s3.replaceAttachment(savedEntry.getAttachment(), entry.getAttachment());
         }
