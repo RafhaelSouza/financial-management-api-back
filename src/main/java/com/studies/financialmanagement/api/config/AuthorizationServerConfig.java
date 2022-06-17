@@ -48,6 +48,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
         accessTokenConverter.setSigningKey("#front&nd");
+        accessTokenConverter.setVerifierKey("#front&nd");
 
         return accessTokenConverter;
     }
@@ -88,7 +89,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints
                 .tokenStore(tokenStore())
                 .tokenEnhancer(tokenEnhancerChain)
-                .accessTokenConverter(accessTokenConverter())
+                //.accessTokenConverter(accessTokenConverter())
                 .reuseRefreshTokens(false)
                 .authenticationManager(authenticationManager);
     }
