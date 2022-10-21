@@ -1,7 +1,7 @@
 package com.studies.financialmanagement.api.storage;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.*;
+//import com.amazonaws.services.s3.AmazonS3;
+//import com.amazonaws.services.s3.model.*;
 import com.studies.financialmanagement.api.config.property.ApiProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +24,10 @@ public class S3 {
 	@Autowired
 	private ApiProperty property;
 	
-	@Autowired
-	private AmazonS3 amazonS3;
+	//@Autowired
+	//private AmazonS3 amazonS3;
 	
-	public String tmpSave(MultipartFile arquivo) {
+	/*public String tmpSave(MultipartFile arquivo) {
 		AccessControlList acl = new AccessControlList();
 		acl.grantPermission(GroupGrantee.AllUsers, Permission.Read);
 		
@@ -89,6 +89,6 @@ public class S3 {
 
 	private String generateUniqueName(String originalFilename) {
 		return UUID.randomUUID() + "_" + originalFilename;
-	}
+	}*/
 
 }

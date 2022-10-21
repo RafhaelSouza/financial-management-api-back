@@ -96,8 +96,8 @@ public class EntryService {
     public Entry save(Entry entry) {
         personValidate(entry);
 
-        if (StringUtils.hasText(entry.getAttachment()))
-            s3.save(entry.getAttachment());
+        /*if (StringUtils.hasText(entry.getAttachment()))
+            s3.save(entry.getAttachment());*/
 
         return repository.save(entry);
     }
@@ -107,14 +107,14 @@ public class EntryService {
         if (!entry.getPerson().equals(savedEntry.getPerson()))
             personValidate(entry);
 
-        if (entry.getAttachment() != null && entry.getAttachment().isEmpty()
+        /*if (entry.getAttachment() != null && entry.getAttachment().isEmpty()
                 && StringUtils.hasText(savedEntry.getAttachment())) {
             s3.delete(savedEntry.getAttachment());
 
         } else if (entry.getAttachment() != null && StringUtils.hasLength(entry.getAttachment())
                 && !entry.getAttachment().equals(savedEntry.getAttachment())) {
             s3.replaceAttachment(savedEntry.getAttachment(), entry.getAttachment());
-        }
+        }*/
 
         BeanUtils.copyProperties(entry, savedEntry, "id");
 

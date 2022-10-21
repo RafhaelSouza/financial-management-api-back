@@ -1,4 +1,4 @@
-package com.studies.financialmanagement.api.config;
+/*package com.studies.financialmanagement.api.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -53,4 +53,4 @@ public class S3Config {
 		
 		return amazonS3;
 	}
-}
+}*/

@@ -131,7 +131,7 @@ public class EntryController {
         repository.deleteById(id);
     }
 
-    @PostMapping("/attachment")
+    /*@PostMapping("/attachment")
     @PreAuthorize("hasAuthority('ROLE_SAVE_ENTRY') and #oauth2.hasScope('write')")
     public Attachment uploadAttachment(@RequestParam MultipartFile attachment) throws IOException {
         //OutputStream out = new FileOutputStream(
@@ -141,7 +141,7 @@ public class EntryController {
         //return "ok";
         String name = s3.tmpSave(attachment);
         return new Attachment(name, s3.setUrl(name));
-    }
+    }*/
 
     @ExceptionHandler(InactiveOrInexistentPersonException.class)
     public ResponseEntity<Object> handleInactiveOrInexistentPersonException(InactiveOrInexistentPersonException ex) {
